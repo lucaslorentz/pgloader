@@ -221,9 +221,10 @@
    st_astext(name)."
   (declare (ignore mysql))
   (case (intern (string-upcase type) "KEYWORD")
-    (:geometry   (format nil "st_astext(`~a`) as `~a`" name name))
-    (:point      (format nil "st_astext(`~a`) as `~a`" name name))
-    (:linestring (format nil "st_astext(`~a`) as `~a`" name name))
+    (:geometry   (format nil "st_astext(CASE WHEN ST_SRID(~a) = 4326 THEN ST_SwapXY(`~a`) ELSE `~a` END) as `~a`" name name name name))
+    (:point      (format nil "st_astext(CASE WHEN ST_SRID(~a) = 4326 THEN ST_SwapXY(`~a`) ELSE `~a` END) as `~a`" name name name name))
+    (:linestring (format nil "st_astext(CASE WHEN ST_SRID(~a) = 4326 THEN ST_SwapXY(`~a`) ELSE `~a` END) as `~a`" name name name name))
+    (:polygon    (format nil "st_astext(CASE WHEN ST_SRID(~a) = 4326 THEN ST_SwapXY(`~a`) ELSE `~a` END) as `~a`" name name name name))
     (t           (format nil "`~a`" name))))
 
 (defmethod get-column-list ((mysql copy-mysql))
